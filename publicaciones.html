@@ -41,8 +41,8 @@ var stateText='ESTADO  '+(d.condition||'CONSULTAR').toUpperCase();ctx.font=fitFo
 var logoBoxW=story?104:86,logoBoxH=story?148:120,logoX=dividerX+12,logoY=fy+(footer-14-logoBoxH)/2-4;
 if(brandGirl.complete&&brandGirl.naturalWidth){var scale=Math.min(logoBoxW/brandGirl.naturalWidth,logoBoxH/brandGirl.naturalHeight),dw=brandGirl.naturalWidth*scale,dh=brandGirl.naturalHeight*scale;ctx.drawImage(brandGirl,logoX+(logoBoxW-dw)/2,logoY+(logoBoxH-dh)/2,dw,dh);}
 var priceX=logoX+logoBoxW+10,priceAvailable=pad+photoW-18-priceX,priceText='S/ '+d.price.toFixed(2),priceCenterX=priceX+priceAvailable/2,contentCenterY=fy+(footer-14)/2;
-ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#684b39';ctx.font='500 '+fitFont(priceText,'"DM Sans"',story?49:42,25,priceAvailable)+'px "DM Sans"';ctx.fillText(priceText,priceCenterX,contentCenterY-8);
-ctx.fillStyle='#947b68';ctx.font=(story?17:14)+'px "DM Sans"';ctx.fillText('ESSENTIA',priceCenterX,contentCenterY+30);ctx.textBaseline='alphabetic';
+ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#684b39';ctx.font='500 '+fitFont(priceText,'"DM Sans"',story?49:42,25,priceAvailable)+'px "DM Sans"';ctx.fillText(priceText,priceCenterX,contentCenterY-24);
+ctx.fillStyle='#947b68';ctx.font=(story?17:14)+'px "DM Sans"';ctx.fillText('ESSENTIA',priceCenterX,contentCenterY+14);ctx.textBaseline='alphabetic';
 el('caption').textContent=caption();ready=true;}
 function status(t){el('status').textContent=t;}
 el('photo').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){status('Selecciona un archivo de imagen.');return;}originalFile=f;var im=new Image();im.onload=function(){source=im;render();status('Fotografía cargada. Ya puedes generar tus diseños.');};im.onerror=function(){status('No se pudo abrir la fotografía.');};im.src=URL.createObjectURL(f);});
