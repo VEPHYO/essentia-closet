@@ -2,694 +2,1047 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f8f5ef">
-  <title>ESSENTIA CLÓSET | Una nueva historia</title>
-  <meta name="description" content="Descubre prendas especiales en Essentia Closet. Moda seleccionada para darles una nueva historia.">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --cream: #f8f5ef;
-      --white: #fffefa;
-      --brown: #594638;
-      --dark: #30251f;
-      --muted: #8b7c70;
-      --line: #e8dfd4;
-      --accent: #b69b7d;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--cream);
-      color: var(--dark);
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    /* BARRA SUPERIOR */
-    .announcement {
-      background: var(--brown);
-      color: white;
-      text-align: center;
-      padding: 10px;
-      font-size: 11px;
-      letter-spacing: 2px;
-    }
-
-    /* ENCABEZADO */
-    header {
-      background: var(--cream);
-      border-bottom: 1px solid var(--line);
-      padding: 15px 7%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-logo {
-      width: 76px;
-      height: 57px;
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
-      background: transparent;
-    }
-
-    .brand-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 45%;
-      mix-blend-mode: multiply;
-    }
-
-    .brand-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      letter-spacing: 1px;
-      line-height: 1;
-    }
-
-    .brand-name span {
-      display: block;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 9px;
-      letter-spacing: 3px;
-      color: var(--muted);
-      margin-top: 5px;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-    }
-
-    .nav-button {
-      border: 1px solid var(--brown);
-      padding: 11px 20px;
-      transition: .3s;
-    }
-
-    .nav-button:hover {
-      background: var(--brown);
-      color: white;
-    }
-
-    /* PORTADA */
-    .hero {
-      min-height: 570px;
-      padding: 65px 8%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 50px;
-      background: var(--cream);
-    }
-
-    .hero-content {
-      max-width: 510px;
-    }
-
-    .eyebrow {
-      color: var(--accent);
-      letter-spacing: 4px;
-      font-size: 10px;
-      margin-bottom: 22px;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(48px, 6vw, 76px);
-      font-weight: 400;
-      line-height: .98;
-      color: var(--brown);
-    }
-
-    .hero h1 em {
-      font-weight: 500;
-    }
-
-    .hero-description {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.9;
-      margin: 25px 0 30px;
-      max-width: 390px;
-    }
-
-    .primary-button {
-      display: inline-block;
-      padding: 15px 28px;
-      background: var(--brown);
-      color: white;
-      font-size: 11px;
-      letter-spacing: 2px;
-      transition: .3s;
-    }
-
-    .primary-button:hover {
-      background: var(--dark);
-      transform: translateY(-2px);
-    }
-
-    .hero-visual {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 350px;
-    }
-
-    .hero-logo-frame {
-      width: min(100%, 440px);
-      aspect-ratio: 1.36;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .hero-logo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 45%;
-      mix-blend-mode: multiply;
-    }
-
-    /* FRASE */
-    .quote {
-      background: #eee7dc;
-      text-align: center;
-      padding: 42px 20px;
-    }
-
-    .quote p {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(23px, 3vw, 34px);
-      color: var(--brown);
-      font-style: italic;
-    }
-
-    /* CATÁLOGO */
-    .catalog {
-      padding: 85px 7%;
-      text-align: center;
-    }
-
-    .section-label {
-      font-size: 10px;
-      letter-spacing: 4px;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      color: var(--brown);
-      font-size: 48px;
-      font-weight: 400;
-    }
-
-    .section-description {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 12px auto 35px;
-      line-height: 1.8;
-    }
-
-    .filters {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 35px;
-    }
-
-    .filter {
-      background: transparent;
-      border: 1px solid var(--line);
-      color: var(--brown);
-      padding: 10px 19px;
-      font-family: inherit;
-      font-size: 11px;
-      cursor: pointer;
-      transition: .3s;
-    }
-
-    .filter.active,
-    .filter:hover {
-      background: var(--brown);
-      color: white;
-      border-color: var(--brown);
-    }
-
-    .products {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 25px;
-      text-align: left;
-    }
-
-    .product-card {
-      background: var(--white);
-      border: 1px solid var(--line);
-      transition: .3s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .product-image {
-      aspect-ratio: 3 / 4;
-      background: #eee8df;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #a39485;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      overflow: hidden;
-    }
-
-    .product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-info {
-      padding: 18px;
-    }
-
-    .product-category {
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    .product-info h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 23px;
-      font-weight: 500;
-      margin: 8px 0;
-    }
-
-    .product-info p {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .product-price {
-      color: var(--brown);
-      font-size: 17px;
-      font-weight: 600;
-      margin-top: 13px;
-    }
-
-    .empty-message {
-      grid-column: 1 / -1;
-      color: var(--muted);
-      padding: 30px;
-    }
-
-    /* ESENCIA */
-    .essence {
-      background: #eee7dc;
-      padding: 80px 10%;
-      text-align: center;
-    }
-
-    .essence h2 {
-      font-family: 'Cormorant Garamond', serif;
-      color: var(--brown);
-      font-size: 44px;
-      font-weight: 400;
-      margin-bottom: 20px;
-    }
-
-    .essence p {
-      max-width: 620px;
-      margin: auto;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 2;
-    }
-
-    /* PIE */
-    footer {
-      background: var(--dark);
-      color: #f8f5ef;
-      padding: 45px 7% 25px;
-      text-align: center;
-    }
-
-    .footer-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 34px;
-      margin-bottom: 12px;
-    }
-
-    footer p {
-      color: #c7b9aa;
-      font-size: 11px;
-      line-height: 2;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      flex-wrap: wrap;
-      margin: 22px 0;
-      font-size: 11px;
-    }
-
-    .copyright {
-      border-top: 1px solid #574a40;
-      padding-top: 20px;
-      margin-top: 25px;
-    }
-
-    /* CELULARES */
-    @media (max-width: 760px) {
-      header {
-        padding: 12px 5%;
-      }
-
-      .brand-logo {
-        width: 61px;
-        height: 46px;
-      }
-
-      .brand-name {
-        font-size: 20px;
-      }
-
-      nav {
-        gap: 12px;
-        font-size: 10px;
-      }
-
-      nav a:not(.nav-button) {
-        display: none;
-      }
-
-      .nav-button {
-        padding: 9px 12px;
-      }
-
-      .hero {
-        grid-template-columns: 1fr;
-        text-align: center;
-        padding: 55px 7%;
-        gap: 15px;
-      }
-
-      .hero-content {
-        margin: auto;
-      }
-
-      .hero-description {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .hero-visual {
-        min-height: 220px;
-        grid-row: 1;
-      }
-
-      .hero-logo-frame {
-        width: min(90%, 350px);
-      }
-
-      .products {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-      }
-
-      .product-info {
-        padding: 12px;
-      }
-
-      .product-info h3 {
-        font-size: 19px;
-      }
-
-      .catalog {
-        padding: 65px 5%;
-      }
-
-      .section-title {
-        font-size: 39px;
-      }
-    }
-
-    @media (max-width: 390px) {
-      .products {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8f1e9">
+
+<title>ESSENTIA CLÓSET | Camina con tu propia esencia</title>
+<meta name="description" content="Prendas especiales que merecen una nueva historia. Descubre Essentia Closet.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream: #f8f1e9;
+  --cream-dark: #eee1d3;
+  --brown: #684b39;
+  --brown-dark: #493326;
+  --text: #45352b;
+  --muted: #947b68;
+  --line: #dfcdbb;
+  --white: #fffaf5;
+  --accent: #b08c6d;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* BARRA SUPERIOR */
+
+.announcement {
+  background: var(--brown);
+  color: #f8eee3;
+  text-align: center;
+  padding: 11px 15px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  word-spacing: 8px;
+}
+
+/* ENCABEZADO */
+
+header {
+  background: rgba(248,241,233,.97);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 5%;
+  min-height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 220px;
+}
+
+.brand-symbol {
+  width: 105px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.brand-symbol img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 48px;
+  background: var(--accent);
+}
+
+.brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--brown-dark);
+  font-size: 30px;
+  line-height: .85;
+  letter-spacing: -.5px;
+}
+
+.brand-name span {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 6px;
+  margin-top: 10px;
+  padding-left: 3px;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+nav a {
+  padding: 12px 0;
+  transition: .3s;
+}
+
+nav a:hover {
+  color: var(--accent);
+}
+
+nav .active {
+  border-bottom: 1px solid var(--brown);
+}
+
+.nav-contact {
+  border: 1px solid var(--brown);
+  padding: 12px 18px;
+}
+
+.nav-contact:hover {
+  background: var(--brown);
+  color: white;
+}
+
+/* PORTADA */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 540px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 65px 9%;
+  background:
+    radial-gradient(ellipse at 80% 40%, #e9d7c5 0%, transparent 48%),
+    linear-gradient(120deg, #faf3eb, #f2e5d8);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  left: -100px;
+  bottom: -150px;
+  width: 430px;
+  height: 240px;
+  border: 2px solid rgba(176,140,109,.35);
+  border-radius: 50%;
+  transform: rotate(25deg);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 530px;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(50px, 6vw, 78px);
+  font-weight: 500;
+  line-height: .98;
+  color: var(--brown-dark);
+}
+
+.hero h1 em {
+  display: block;
+  font-family: 'Parisienne', cursive;
+  font-size: 1.12em;
+  font-weight: 400;
+  color: var(--brown);
+  margin-top: 5px;
+}
+
+.hero-description {
+  max-width: 390px;
+  margin: 25px auto 30px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--brown);
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 15px;
+  background: var(--brown);
+  color: white;
+  padding: 15px 26px;
+  border-radius: 35px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  transition: .3s;
+}
+
+.primary-button:hover {
+  background: var(--brown-dark);
+  transform: translateY(-3px);
+}
+
+.primary-button span {
+  font-size: 18px;
+}
+
+/* IMAGEN DE PORTADA */
+
+.hero-visual {
+  height: 410px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: #e7d3c0;
+  border-radius: 50%;
+}
+
+.hero-visual::after {
+  content: "ESSENTIA";
+  position: absolute;
+  bottom: 12px;
+  right: 10%;
+  font-family: 'Parisienne', cursive;
+  font-size: 45px;
+  color: rgba(104,75,57,.15);
+}
+
+.hero-decoration {
+  position: relative;
+  z-index: 1;
+  width: 85%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--brown);
+}
+
+.hero-decoration img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* FRASE */
+
+.quote {
+  background: var(--cream-dark);
+  padding: 25px 15px;
+  text-align: center;
+  position: relative;
+}
+
+.quote p {
+  font-family: 'Parisienne', cursive;
+  font-size: clamp(25px, 3.2vw, 37px);
+  color: var(--brown);
+}
+
+.quote::before,
+.quote::after {
+  content: "";
+  display: inline-block;
+  width: 80px;
+  height: 1px;
+  background: var(--accent);
+  vertical-align: middle;
+  margin: 0 25px;
+}
+
+/* CATÁLOGO */
+
+.catalog {
+  padding: 75px 5% 65px;
+  text-align: center;
+  background: var(--cream);
+}
+
+.section-label {
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--brown-dark);
+  font-size: clamp(38px, 5vw, 52px);
+  font-weight: 500;
+}
+
+.section-description {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  color: var(--muted);
+  margin: 5px auto 25px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.filter {
+  border: 1px solid var(--accent);
+  border-radius: 30px;
+  background: transparent;
+  color: var(--brown);
+  padding: 9px 22px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.filter:hover,
+.filter.active {
+  background: var(--brown);
+  color: white;
+  border-color: var(--brown);
+}
+
+/* PRODUCTOS */
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  text-align: left;
+}
+
+.product-card {
+  background: var(--white);
+  border: 1px solid #eadbcb;
+  border-radius: 7px;
+  overflow: hidden;
+  transition: .3s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(82,55,37,.08);
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #eadbcb;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-placeholder {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+  font-family: 'Parisienne', cursive;
+  font-size: 27px;
+}
+
+.product-info {
+  padding: 14px;
+}
+
+.product-category {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.product-info h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 21px;
+  font-weight: 500;
+  margin: 6px 0;
+}
+
+.product-info p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.product-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brown-dark);
+  margin-top: 9px;
+}
+
+.empty-message {
+  grid-column: 1 / -1;
+  padding: 35px;
+  color: var(--muted);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+}
+
+/* ESENCIA */
+
+.essence {
+  background: linear-gradient(110deg, #eddfd0, #f7eee5);
+  padding: 65px 8%;
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 55px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.essence-image {
+  min-height: 300px;
+  background: #dfcbbb;
+  border-radius: 50% 50% 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: var(--brown);
+  font-family: 'Parisienne', cursive;
+  font-size: 30px;
+}
+
+.essence-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.essence-content {
+  max-width: 560px;
+}
+
+.essence-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(38px, 5vw, 51px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--brown-dark);
+  margin-bottom: 20px;
+}
+
+.essence-content p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--brown);
+  margin-bottom: 23px;
+}
+
+/* PIE DE PÁGINA */
+
+footer {
+  background: var(--brown-dark);
+  color: var(--cream);
+  padding: 38px 5% 22px;
+}
+
+.footer-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-style: italic;
+}
+
+.footer-brand p {
+  font-size: 17px;
+  font-family: 'Parisienne', cursive;
+  color: #ddc6af;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: #eadbcb;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.footer-social {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-social a {
+  font-size: 12px;
+  border: 1px solid #b99e86;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copyright {
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,.2);
+  margin-top: 28px;
+  padding-top: 18px;
+  font-size: 10px;
+  color: #d3bba5;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 900px) {
+  header {
+    padding: 12px 4%;
+  }
+
+  nav {
+    gap: 16px;
+  }
+
+  .brand {
+    min-width: auto;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .essence {
+    gap: 30px;
+  }
+}
+
+@media(max-width: 650px) {
+  .announcement {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    word-spacing: 3px;
+  }
+
+  header {
+    min-height: 78px;
+    padding: 8px 4%;
+  }
+
+  .brand-symbol {
+    width: 65px;
+    height: 52px;
+  }
+
+  .brand-divider {
+    height: 38px;
+  }
+
+  .brand-name {
+    font-size: 23px;
+  }
+
+  .brand-name span {
+    font-size: 9px;
+    letter-spacing: 4px;
+  }
+
+  nav {
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 9px;
+  }
+
+  nav a:not(.nav-contact) {
+    display: none;
+  }
+
+  .nav-contact {
+    padding: 10px 12px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 55px 7% 35px;
+    text-align: center;
+  }
+
+  .hero-content {
+    margin: auto;
+  }
+
+  .hero h1 {
+    font-size: 57px;
+  }
+
+  .hero-description {
+    font-size: 19px;
+  }
+
+  .hero-visual {
+    height: 250px;
+    grid-row: 1;
+  }
+
+  .hero-visual::before {
+    width: 230px;
+    height: 230px;
+  }
+
+  .hero-decoration {
+    width: 80%;
+  }
+
+  .quote::before,
+  .quote::after {
+    width: 20px;
+    margin: 0 8px;
+  }
+
+  .catalog {
+    padding: 55px 4%;
+  }
+
+  .products {
+    gap: 12px;
+  }
+
+  .product-info {
+    padding: 10px;
+  }
+
+  .product-info h3 {
+    font-size: 18px;
+  }
+
+  .product-info p {
+    font-size: 13px;
+  }
+
+  .product-price {
+    font-size: 14px;
+  }
+
+  .essence {
+    grid-template-columns: 1fr;
+    padding: 50px 7%;
+  }
+
+  .essence-image {
+    min-height: 240px;
+  }
+
+  .essence-content {
+    text-align: center;
+  }
+
+  .footer-main {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+}
+
+@media(max-width: 360px) {
+  .products {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="announcement">
-    PRENDAS ESPECIALES · NUEVAS HISTORIAS · ESENCIA PROPIA
-  </div>
+<div class="announcement">
+  PRENDAS ESPECIALES ✦ NUEVAS HISTORIAS ✦ ESENCIA PROPIA
+</div>
 
-  <header>
-    <a href="#" class="brand">
-      <div class="brand-logo">
-        <img src="logo.jpg" alt="Logo original de Essentia Closet">
-      </div>
-      <div class="brand-name">
-        ESSENTIA
-        <span>C L Ó S E T</span>
-      </div>
+<header>
+  <a href="#inicio" class="brand">
+    <div class="brand-symbol">
+      <img src="chica-logo.png" alt="Silueta femenina de Essentia Closet">
+    </div>
+
+    <div class="brand-divider"></div>
+
+    <div class="brand-name">
+      ESSENTIA
+      <span>C L Ó S E T</span>
+    </div>
+  </a>
+
+  <nav>
+    <a href="#inicio" class="active">INICIO</a>
+    <a href="#catalogo">CATÁLOGO</a>
+    <a href="#nosotros">NOSOTROS</a>
+    <a href="#contacto" class="nav-contact">CONTACTO</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="hero" id="inicio">
+
+  <div class="hero-content">
+
+    <p class="eyebrow">
+      ESSENTIA CLÓSET · MODA CON ESENCIA
+    </p>
+
+    <h1>
+      Camina con
+      <em>tu propia esencia.</em>
+    </h1>
+
+    <p class="hero-description">
+      Hay prendas que acompañan momentos,
+      expresan quiénes somos y cuentan historias.
+      Descubre piezas especiales que merecen
+      volver a caminar contigo.
+    </p>
+
+    <a href="#catalogo" class="primary-button">
+      DESCUBRIR PRENDAS <span>›</span>
     </a>
 
-    <nav>
-      <a href="#inicio">INICIO</a>
-      <a href="#catalogo">CATÁLOGO</a>
-      <a href="#nosotros">NOSOTROS</a>
-      <a class="nav-button" href="#catalogo">DESCUBRIR</a>
-    </nav>
-  </header>
+  </div>
 
-  <main>
-    <section class="hero" id="inicio">
-      <div class="hero-content">
-        <p class="eyebrow">BIENVENIDA A ESSENTIA CLÓSET</p>
+  <div class="hero-visual">
+    <div class="hero-decoration">
+      <!-- Aquí podremos incorporar una fotografía editorial de moda -->
+      <span style="font-family:'Parisienne';font-size:35px;">
+        Tu esencia, tu historia.
+      </span>
+    </div>
+  </div>
 
-        <h1>
-          Lo especial<br>
-          merece <em>otra historia.</em>
-        </h1>
+</section>
 
-        <p class="hero-description">
-          Prendas seleccionadas con encanto, personalidad
-          y una nueva oportunidad para acompañarte.
-          Descubre piezas especiales y encuentra tu próxima favorita.
-        </p>
+<section class="quote">
+  <p>«La elegancia está en aquello que nos hace únicas»</p>
+</section>
 
-        <a href="#catalogo" class="primary-button">
-          EXPLORAR COLECCIÓN
-        </a>
-      </div>
+<section class="catalog" id="catalogo">
 
-      <div class="hero-visual">
-        <div class="hero-logo-frame">
-          <img src="logo.jpg" alt="Essentia Closet">
-        </div>
-      </div>
-    </section>
+  <p class="section-label">DESCUBRE NUESTRAS PRENDAS</p>
 
-    <section class="quote">
-      <p>«Cada prenda merece una nueva historia»</p>
-    </section>
+  <h2 class="section-title">Elige algo especial</h2>
 
-    <section class="catalog" id="catalogo">
-      <p class="section-label">DESCUBRE NUESTRAS PRENDAS</p>
-      <h2 class="section-title">Elige algo especial</h2>
-      <p class="section-description">
-        Una selección de prendas esperando encontrar un nuevo hogar.
-      </p>
+  <p class="section-description">
+    Una selección de prendas esperando encontrar un nuevo hogar.
+  </p>
 
-      <div class="filters">
-        <button class="filter active" data-category="Todos">Todo</button>
-        <button class="filter" data-category="Blusas">Blusas</button>
-        <button class="filter" data-category="Pantalones">Pantalones</button>
-        <button class="filter" data-category="Vestidos">Vestidos</button>
-        <button class="filter" data-category="Otros">Otros</button>
-      </div>
+  <div class="filters">
+    <button class="filter active" data-category="Todos">Todo</button>
+    <button class="filter" data-category="Blusas">Blusas</button>
+    <button class="filter" data-category="Pantalones">Pantalones</button>
+    <button class="filter" data-category="Vestidos">Vestidos</button>
+    <button class="filter" data-category="Otros">Otros</button>
+  </div>
 
-      <div class="products" id="products"></div>
-    </section>
+  <div class="products" id="products"></div>
 
-    <section class="essence" id="nosotros">
-      <p class="section-label">NUESTRA ESENCIA</p>
-      <h2>Más que una prenda, una nueva historia.</h2>
-      <p>
-        En Essentia Closet creemos que lo especial no pierde su valor
-        con el tiempo. Seleccionamos prendas para darles una nueva
-        oportunidad, promoviendo una forma más consciente y
-        personal de vestir.
-      </p>
-    </section>
-  </main>
+</section>
 
-  <footer>
-    <div class="footer-name">Essentia Closet</div>
-    <p>Lo especial merece otra historia.</p>
+<section class="essence" id="nosotros">
+
+  <div class="essence-image">
+    <span>Nuevas historias</span>
+  </div>
+
+  <div class="essence-content">
+
+    <p class="section-label">NUESTRA ESENCIA</p>
+
+    <h2>
+      Más que una prenda,
+      una nueva historia.
+    </h2>
+
+    <p>
+      En Essentia Clóset creemos que lo especial
+      no pierde su valor con el tiempo.
+      Cada prenda tiene una historia y merece
+      la oportunidad de acompañar nuevos momentos.
+    </p>
+
+    <p>
+      Seleccionamos piezas con encanto y personalidad,
+      promoviendo una forma más consciente,
+      auténtica y especial de vestir.
+    </p>
+
+    <a href="#catalogo" class="primary-button">
+      CONOCE NUESTRA COLECCIÓN <span>›</span>
+    </a>
+
+  </div>
+
+</section>
+
+</main>
+
+<footer id="contacto">
+
+  <div class="footer-main">
+
+    <div class="footer-brand">
+      Essentia Closet
+      <p>Lo especial merece otra historia.</p>
+    </div>
 
     <div class="footer-links">
       <a href="#inicio">Inicio</a>
       <a href="#catalogo">Catálogo</a>
       <a href="#nosotros">Nuestra esencia</a>
+      <a href="#contacto">Contacto</a>
       <a href="admin.html">Administración</a>
     </div>
 
-    <p class="copyright">
-      © 2026 ESSENTIA CLÓSET · Todos los derechos reservados.
-    </p>
-  </footer>
+    <div class="footer-social">
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="Pinterest">P</a>
+      <a href="#" aria-label="TikTok">TK</a>
+    </div>
 
-  <script>
-    // Productos de demostración.
-    // Después conectaremos este catálogo con Supabase.
+  </div>
 
-    const products = [
-      {
-        code: "EC001",
-        name: "Blusa delicada",
-        category: "Blusas",
-        description: "Talla M · Excelente estado",
-        price: 25,
-        status: "Disponible"
-      },
-      {
-        code: "EC002",
-        name: "Pantalón clásico",
-        category: "Pantalones",
-        description: "Talla 28 · Excelente estado",
-        price: 35,
-        status: "Disponible"
-      },
-      {
-        code: "EC003",
-        name: "Vestido especial",
-        category: "Vestidos",
-        description: "Talla S · Muy buen estado",
-        price: 40,
-        status: "Disponible"
-      },
-      {
-        code: "EC004",
-        name: "Blusa elegante",
-        category: "Blusas",
-        description: "Talla M · Muy buen estado",
-        price: 22,
-        status: "Disponible"
-      },
-      {
-        code: "EC005",
-        name: "Prenda especial",
-        category: "Otros",
-        description: "Talla única · Buen estado",
-        price: 20,
-        status: "Disponible"
-      },
-      {
-        code: "EC006",
-        name: "Pantalón moderno",
-        category: "Pantalones",
-        description: "Talla 30 · Excelente estado",
-        price: 38,
-        status: "Disponible"
-      }
-    ];
+  <div class="copyright">
+    © 2026 ESSENTIA CLÓSET · Todos los derechos reservados.
+  </div>
 
-    const productsContainer = document.getElementById("products");
-    const filterButtons = document.querySelectorAll(".filter");
+</footer>
 
-    function renderProducts(category = "Todos") {
-      const visibleProducts = products.filter(product =>
-        product.status === "Disponible" &&
-        (category === "Todos" || product.category === category)
-      );
+<script>
 
-      if (!visibleProducts.length) {
-        productsContainer.innerHTML =
-          '<p class="empty-message">Pronto tendremos más prendas para ti.</p>';
-        return;
-      }
+// PRODUCTOS DE DEMOSTRACIÓN
+// Después conectaremos estos datos con Supabase.
 
-      productsContainer.innerHTML = visibleProducts.map(product => `
-        <article class="product-card">
-          <div class="product-image">
-            <span>ESSENTIA</span>
-          </div>
-          <div class="product-info">
-            <span class="product-category">${product.category}</span>
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p>Código: ${product.code}</p>
-            <div class="product-price">S/ ${product.price.toFixed(2)}</div>
-          </div>
-        </article>
-      `).join("");
-    }
+const products = [
+  {
+    code: "EC001",
+    name: "Blusa delicada",
+    category: "Blusas",
+    description: "Talla M · Excelente estado",
+    price: 25,
+    image: ""
+  },
+  {
+    code: "EC002",
+    name: "Pantalón clásico",
+    category: "Pantalones",
+    description: "Talla 28 · Excelente estado",
+    price: 35,
+    image: ""
+  },
+  {
+    code: "EC003",
+    name: "Vestido especial",
+    category: "Vestidos",
+    description: "Talla S · Muy buen estado",
+    price: 40,
+    image: ""
+  },
+  {
+    code: "EC004",
+    name: "Suéter elegante",
+    category: "Otros",
+    description: "Talla M · Muy buen estado",
+    price: 32,
+    image: ""
+  },
+  {
+    code: "EC005",
+    name: "Blusa romántica",
+    category: "Blusas",
+    description: "Talla S · Excelente estado",
+    price: 28,
+    image: ""
+  },
+  {
+    code: "EC006",
+    name: "Pantalón moderno",
+    category: "Pantalones",
+    description: "Talla 30 · Buen estado",
+    price: 38,
+    image: ""
+  },
+  {
+    code: "EC007",
+    name: "Vestido floral",
+    category: "Vestidos",
+    description: "Talla M · Excelente estado",
+    price: 45,
+    image: ""
+  },
+  {
+    code: "EC008",
+    name: "Prenda especial",
+    category: "Otros",
+    description: "Talla única · Buen estado",
+    price: 20,
+    image: ""
+  }
+];
 
-    filterButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        filterButtons.forEach(item => item.classList.remove("active"));
-        button.classList.add("active");
-        renderProducts(button.dataset.category);
-      });
-    });
+const container = document.getElementById("products");
+const buttons = document.querySelectorAll(".filter");
 
-    renderProducts();
-  </script>
+function renderProducts(category = "Todos") {
+
+  const visible = products.filter(product =>
+    category === "Todos" || product.category === category
+  );
+
+  if (!visible.length) {
+    container.innerHTML =
+      '<p class="empty-message">Pronto tendremos más prendas especiales para ti.</p>';
+    return;
+  }
+
+  container.innerHTML = visible.map(product => `
+
+    <article class="product-card">
+
+      <div class="product-image">
+
+        ${
+          product.image
+          ? `<img src="${product.image}" alt="${product.name}" loading="lazy">`
+          : `<div class="image-placeholder">Essentia</div>`
+        }
+
+      </div>
+
+      <div class="product-info">
+
+        <span class="product-category">
+          ${product.category}
+        </span>
+
+        <h3>${product.name}</h3>
+
+        <p>${product.description}</p>
+
+        <div class="product-price">
+          S/ ${product.price.toFixed(2)}
+        </div>
+
+      </div>
+
+    </article>
+
+  `).join("");
+
+}
+
+buttons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    buttons.forEach(item => item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderProducts(button.dataset.category);
+
+  });
+
+});
+
+renderProducts();
+
+</script>
 
 </body>
 </html>
