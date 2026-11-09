@@ -38,11 +38,11 @@ ctx.textAlign='left';ctx.fillStyle='#493326';
 var codeText='CÓDIGO  '+d.code;ctx.font='500 '+fitFont(codeText,'"DM Sans"',story?31:25,18,leftW)+'px "DM Sans"';ctx.fillText(codeText,innerX,codeY);
 var sizeText='TALLA  '+(d.size||'ÚNICA');ctx.fillStyle='#766354';ctx.font=fitFont(sizeText,'"DM Sans"',story?27:22,17,leftW)+'px "DM Sans"';ctx.fillText(sizeText,innerX,sizeY);
 var stateText='ESTADO  '+(d.condition||'CONSULTAR').toUpperCase();ctx.font=fitFont(stateText,'"DM Sans"',story?24:19,13,leftW)+'px "DM Sans"';ctx.fillText(stateText,innerX,stateY,leftW);
-var logoBoxW=story?84:68,logoBoxH=story?118:94,logoX=dividerX+15,logoY=fy+(footer-14-logoBoxH)/2-8;
+var logoBoxW=story?104:86,logoBoxH=story?148:120,logoX=dividerX+12,logoY=fy+(footer-14-logoBoxH)/2-4;
 if(brandGirl.complete&&brandGirl.naturalWidth){var scale=Math.min(logoBoxW/brandGirl.naturalWidth,logoBoxH/brandGirl.naturalHeight),dw=brandGirl.naturalWidth*scale,dh=brandGirl.naturalHeight*scale;ctx.drawImage(brandGirl,logoX+(logoBoxW-dw)/2,logoY+(logoBoxH-dh)/2,dw,dh);}
-var priceX=logoX+logoBoxW+12,priceAvailable=pad+photoW-18-priceX,priceText='S/ '+d.price.toFixed(2);
-ctx.textAlign='center';ctx.fillStyle='#684b39';ctx.font='500 '+fitFont(priceText,'"DM Sans"',story?40:33,22,priceAvailable)+'px "DM Sans"';ctx.fillText(priceText,priceX+priceAvailable/2,fy+(story?157:122));
-ctx.fillStyle='#947b68';ctx.font=(story?16:13)+'px "DM Sans"';ctx.fillText('ESSENTIA',priceX+priceAvailable/2,fy+(story?188:148));
+var priceX=logoX+logoBoxW+10,priceAvailable=pad+photoW-18-priceX,priceText='S/ '+d.price.toFixed(2),priceCenterX=priceX+priceAvailable/2,contentCenterY=fy+(footer-14)/2;
+ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#684b39';ctx.font='500 '+fitFont(priceText,'"DM Sans"',story?49:42,25,priceAvailable)+'px "DM Sans"';ctx.fillText(priceText,priceCenterX,contentCenterY-8);
+ctx.fillStyle='#947b68';ctx.font=(story?17:14)+'px "DM Sans"';ctx.fillText('ESSENTIA',priceCenterX,contentCenterY+30);ctx.textBaseline='alphabetic';
 el('caption').textContent=caption();ready=true;}
 function status(t){el('status').textContent=t;}
 el('photo').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){status('Selecciona un archivo de imagen.');return;}originalFile=f;var im=new Image();im.onload=function(){source=im;render();status('Fotografía cargada. Ya puedes generar tus diseños.');};im.onerror=function(){status('No se pudo abrir la fotografía.');};im.src=URL.createObjectURL(f);});
