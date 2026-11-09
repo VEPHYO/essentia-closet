@@ -1,0 +1,598 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f5ef">
+  <title>Administración | ESSENTIA CLÓSET</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #f8f5ef;
+      --paper: #fffefa;
+      --brown: #604b3e;
+      --dark: #302820;
+      --muted: #948579;
+      --line: #e9e1d7;
+      --green: #727b65;
+      --soft: #eee8df;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+    }
+
+    button, input, select { font: inherit; }
+
+    .topbar {
+      height: 76px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+    }
+
+    .brand {
+      text-decoration: none;
+      color: var(--brown);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 29px;
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 3px;
+      margin-top: 5px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .top-actions a {
+      color: var(--brown);
+      text-decoration: none;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .profile {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: var(--soft);
+      color: var(--brown);
+      display: grid;
+      place-items: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 225px minmax(0, 1fr);
+      min-height: calc(100vh - 76px);
+    }
+
+    aside {
+      background: #f1ece4;
+      border-right: 1px solid var(--line);
+      padding: 35px 20px;
+    }
+
+    .side-label {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      margin: 0 0 16px 12px;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 38px;
+    }
+
+    .side-nav a {
+      color: #77685b;
+      text-decoration: none;
+      padding: 13px 12px;
+      font-size: 12px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .side-nav a.active,
+    .side-nav a:hover {
+      background: var(--paper);
+      color: var(--brown);
+    }
+
+    .side-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .side-note {
+      border-top: 1px solid #ded5ca;
+      padding: 20px 12px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    main {
+      padding: 40px 5%;
+      max-width: 1500px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .welcome {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: 43px;
+      color: var(--brown);
+      line-height: 1;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .date-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .notice {
+      background: #f1e9dc;
+      border: 1px solid #e5d8c7;
+      padding: 15px 18px;
+      color: #76614f;
+      font-size: 11px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .notice strong { color: var(--brown); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 32px;
+    }
+
+    .metric {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 22px;
+      min-height: 125px;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .metric-symbol {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      color: var(--brown);
+      border-radius: 50%;
+      font-size: 13px;
+    }
+
+    .metric-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      color: var(--brown);
+      margin-top: 10px;
+    }
+
+    .metric-caption {
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .section-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-bottom: 25px;
+    }
+
+    .card-heading {
+      padding: 22px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-heading h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 25px;
+      font-weight: 500;
+      color: var(--brown);
+    }
+
+    .card-heading p {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 4px;
+    }
+
+    .button {
+      border: 1px solid var(--brown);
+      background: var(--brown);
+      color: white;
+      padding: 12px 17px;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .button-outline {
+      background: transparent;
+      color: var(--brown);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: #fcfaf6;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0ebe4;
+    }
+
+    td { font-size: 11px; }
+
+    .code {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .status {
+      display: inline-block;
+      background: #edf0e8;
+      color: #69745c;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 9px;
+    }
+
+    .status.reserved {
+      background: #f4eddf;
+      color: #987b4e;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .quick-card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .quick-card span {
+      color: var(--green);
+      font-size: 20px;
+    }
+
+    .quick-card h3 {
+      color: var(--brown);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      margin: 10px 0 5px;
+    }
+
+    .quick-card p {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 25px;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 950px) {
+      .layout { grid-template-columns: 190px minmax(0, 1fr); }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 650px) {
+      .topbar { height: 68px; }
+      .layout { display: block; }
+      aside {
+        padding: 10px 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        overflow-x: auto;
+      }
+      .side-label, .side-note { display: none; }
+      .side-nav {
+        display: flex;
+        width: max-content;
+        margin: 0;
+        gap: 5px;
+      }
+      .side-nav a { padding: 10px; font-size: 10px; }
+      main { padding: 30px 5%; }
+      .welcome { align-items: flex-start; }
+      h1 { font-size: 36px; }
+      .date-label { display: none; }
+      .metrics { gap: 9px; }
+      .metric { padding: 15px; min-height: 110px; }
+      .metric-value { font-size: 29px; }
+      .card-heading { padding: 17px; align-items: flex-start; }
+      .card-heading h2 { font-size: 22px; }
+      .quick-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand">
+      <span class="brand-name">ESSENTIA</span>
+      <span class="brand-sub">CLÓSET · ADMINISTRACIÓN</span>
+    </a>
+
+    <div class="top-actions">
+      <a href="index.html">Ver catálogo ↗</a>
+      <div class="profile">E</div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <aside>
+      <p class="side-label">Menú principal</p>
+
+      <nav class="side-nav">
+        <a href="#inicio" class="active"><span class="side-icon">⌂</span>Resumen</a>
+        <a href="#inventario"><span class="side-icon">♧</span>Inventario</a>
+        <a href="#ventas"><span class="side-icon">◇</span>Ventas</a>
+        <a href="#reservas"><span class="side-icon">♡</span>Reservas</a>
+        <a href="#reportes"><span class="side-icon">▤</span>Reportes</a>
+      </nav>
+
+      <p class="side-label">Configuración</p>
+
+      <nav class="side-nav">
+        <a href="#configuracion"><span class="side-icon">⚙</span>Configuración</a>
+      </nav>
+
+      <div class="side-note">
+        ESSENTIA CLÓSET<br>
+        Prendas con esencia.<br>
+        Historias que continúan.
+      </div>
+    </aside>
+
+    <main id="inicio">
+
+      <div class="welcome">
+        <div>
+          <div class="eyebrow">TU ESPACIO DE GESTIÓN</div>
+          <h1>Bienvenida a tu clóset.</h1>
+          <p>Un espacio para organizar, cuidar y dar nuevas historias a tus prendas.</p>
+        </div>
+        <span class="date-label">PANEL DE ADMINISTRACIÓN</span>
+      </div>
+
+      <div class="notice">
+        <strong>Versión de diseño:</strong> este panel todavía utiliza datos de muestra.
+        La conexión con Google Sheets, el acceso protegido y el guardado de productos
+        se habilitarán en la siguiente etapa. No ingreses información real todavía.
+      </div>
+
+      <section class="metrics">
+        <article class="metric">
+          <div class="metric-top">
+            Total de prendas
+            <span class="metric-symbol">♧</span>
+          </div>
+          <div class="metric-value">60</div>
+          <div class="metric-caption">Inventario de demostración</div>
+        </article>
+
+        <article class="metric">
+          <div class="metric-top">
+            Disponibles
+            <span class="metric-symbol">♡</span>
+          </div>
+          <div class="metric-value">48</div>
+          <div class="metric-caption">Listas para una nueva historia</div>
+        </article>
+
+        <article class="metric">
+          <div class="metric-top">
+            Reservadas
+            <span class="metric-symbol">◇</span>
+          </div>
+          <div class="metric-value">5</div>
+          <div class="metric-caption">Pendientes de confirmación</div>
+        </article>
+
+        <article class="metric">
+          <div class="metric-top">
+            Vendidas
+            <span class="metric-symbol">✓</span>
+          </div>
+          <div class="metric-value">7</div>
+          <div class="metric-caption">Prendas que encontraron hogar</div>
+        </article>
+      </section>
+
+      <section class="section-card" id="inventario">
+        <div class="card-heading">
+          <div>
+            <h2>Inventario de prendas</h2>
+            <p>Vista previa de cómo se organizarán tus productos.</p>
+          </div>
+          <a class="button" href="#inventario">+ Nueva prenda</a>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Prenda</th>
+                <th>Categoría</th>
+                <th>Talla</th>
+                <th>Precio</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="code">ESC-001</td>
+                <td>Blusa clásica</td>
+                <td>Ropa</td>
+                <td>M</td>
+                <td>S/ 35.00</td>
+                <td><span class="status">Disponible</span></td>
+              </tr>
+              <tr>
+                <td class="code">ESC-002</td>
+                <td>Vestido elegante</td>
+                <td>Vestidos</td>
+                <td>S</td>
+                <td>S/ 55.00</td>
+                <td><span class="status reserved">Reservada</span></td>
+              </tr>
+              <tr>
+                <td class="code">ESC-003</td>
+                <td>Prenda especial</td>
+                <td>Ropa</td>
+                <td>M</td>
+                <td>S/ 45.00</td>
+                <td><span class="status">Disponible</span></td>
+              </tr>
+              <tr>
+                <td class="code">ESC-004</td>
+                <td>Calzado urbano</td>
+                <td>Calzado</td>
+                <td>37</td>
+                <td>S/ 60.00</td>
+                <td><span class="status">Disponible</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="ventas" class="quick-grid">
+        <article class="quick-card">
+          <span>◇</span>
+          <h3>Ventas</h3>
+          <p>Registro de ventas, fechas, métodos de pago y detalle de cada operación.</p>
+        </article>
+
+        <article class="quick-card" id="reservas">
+          <span>♡</span>
+          <h3>Reservas</h3>
+          <p>Seguimiento de prendas reservadas y confirmación de compras.</p>
+        </article>
+
+        <article class="quick-card" id="reportes">
+          <span>▤</span>
+          <h3>Ingresos y ganancias</h3>
+          <p>Control de costos, ingresos, utilidad y resultados de tu clóset.</p>
+        </article>
+      </section>
+
+      <div class="footer" id="configuracion">
+        ESSENTIA CLÓSET · ADMINISTRACIÓN · 2026
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
