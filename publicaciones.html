@@ -24,15 +24,17 @@ function caption(){var d=data();return 'ESSENTIA CLÓSET · Una pieza especial p
 function cover(img,x,y,w,h){var s=Math.max(w/img.width,h/img.height),sw=w/s,sh=h/s;ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,x,y,w,h);}
 var palette={neutral:'#b08c6d',fuchsia:'#c85b91',aqua:'#65aaa3',sage:'#78947c',lilac:'#9b83b5',terracotta:'#b66d50',mustard:'#b89443',blue:'#6f98bb'};
 function wrapWords(text,maxWidth,fontFamily,maxSize,minSize){var words=String(text||'').split(/\s+/),lines=[],line='',size=maxSize;ctx.font=size+'px '+fontFamily;words.forEach(function(word){var test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else{line=test;}});if(line)lines.push(line);while(lines.length>2&&size>minSize){size-=2;ctx.font=size+'px '+fontFamily;lines=[];line='';words.forEach(function(word){var test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}else{line=test;}});if(line)lines.push(line);}return{lines:lines.slice(0,2),size:size};}
-function render(){var d=data(),wh=sizes[format],w=wh[0],h=wh[1],story=format==='story',pad=story?42:38,top=story?115:88,footer=story?225:165,photoW=w-pad*2,photoH=h-top-footer,accent=palette[d.accent]||palette.neutral;
+function fitFont(text,family,maxSize,minSize,maxWidth){var size=maxSize;ctx.font=size+'px '+family;while(ctx.measureText(text).width>maxWidth&&size>minSize){size-=1;ctx.font=size+'px '+family;}return size;}
+function render(){var d=data(),wh=sizes[format],w=wh[0],h=wh[1],story=format==='story',pad=story?42:38,top=story?105:78,footer=story?300:235,photoW=w-pad*2,photoH=h-top-footer,accent=palette[d.accent]||palette.neutral;
 canvas.width=w;canvas.height=h;ctx.fillStyle='#f8f1e9';ctx.fillRect(0,0,w,h);
 if(source){cover(source,pad,top,photoW,photoH);}else{ctx.fillStyle='#eadbcb';ctx.fillRect(pad,top,photoW,photoH);ctx.fillStyle='#947b68';ctx.textAlign='center';ctx.font='italic 48px "Cormorant Garamond"';ctx.fillText('Tu esencia, tu historia',w/2,top+photoH/2);}
-var fy=top+photoH+18;ctx.fillStyle='#fffaf5';ctx.fillRect(pad,fy,photoW,footer-18);
-ctx.fillStyle=accent;ctx.fillRect(w/2-(story?45:34),fy+(story?22:16),story?90:68,3);
-ctx.textAlign='center';ctx.fillStyle='#493326';
-if(story){ctx.font='500 34px "DM Sans"';ctx.fillText('CÓDIGO  '+d.code,w/2,fy+82);ctx.font='27px "DM Sans"';ctx.fillStyle='#766354';ctx.fillText('TALLA  '+(d.size||'ÚNICA')+'   ·   '+(d.condition||'CONSULTAR').toUpperCase(),w/2,fy+132);ctx.fillStyle='#684b39';ctx.font='500 43px "DM Sans"';ctx.fillText('S/ '+d.price.toFixed(2),w/2,fy+190);}
-else{ctx.font='500 27px "DM Sans"';ctx.fillText('CÓDIGO  '+d.code,w/2,fy+58);ctx.font='22px "DM Sans"';ctx.fillStyle='#766354';ctx.fillText('TALLA  '+(d.size||'ÚNICA')+'   ·   '+(d.condition||'CONSULTAR').toUpperCase(),w/2,fy+94,photoW-35);ctx.fillStyle='#684b39';ctx.font='500 34px "DM Sans"';ctx.fillText('S/ '+d.price.toFixed(2),w/2,fy+140);}
-ctx.fillStyle='#947b68';ctx.font=(story?19:15)+'px "DM Sans"';ctx.fillText('ESSENTIA CLÓSET',w/2,h-(story?17:8));el('caption').textContent=caption();ready=true;}
+var fy=top+photoH+16;ctx.fillStyle='#fffaf5';ctx.fillRect(pad,fy,photoW,footer-16);ctx.fillStyle=accent;ctx.fillRect(w/2-32,fy+13,64,3);ctx.textAlign='center';ctx.textBaseline='alphabetic';
+var left=photoW-56,codeY=fy+(story?73:58),sizeY=fy+(story?126:101),stateY=fy+(story?177:143),priceY=fy+(story?250:202);
+ctx.fillStyle='#493326';ctx.font='500 '+fitFont('CÓDIGO  '+d.code,'"DM Sans"',story?31:26,19,left)+'px "DM Sans"';ctx.fillText('CÓDIGO  '+d.code,w/2,codeY);
+ctx.fillStyle='#766354';var sizeText='TALLA  '+(d.size||'ÚNICA');ctx.font=fitFont(sizeText,'"DM Sans"',story?27:23,18,left)+'px "DM Sans"';ctx.fillText(sizeText,w/2,sizeY);
+var stateText='ESTADO  '+(d.condition||'CONSULTAR').toUpperCase();ctx.font=fitFont(stateText,'"DM Sans"',story?23:19,14,left)+'px "DM Sans"';ctx.fillText(stateText,w/2,stateY);
+ctx.fillStyle='#684b39';ctx.font='500 '+(story?42:34)+'px "DM Sans"';ctx.fillText('S/ '+d.price.toFixed(2),w/2,priceY);
+ctx.fillStyle='#947b68';ctx.font=(story?17:14)+'px "DM Sans"';ctx.fillText('ESSENTIA CLÓSET',w/2,h-(story?14:8));el('caption').textContent=caption();ready=true;}
 function status(t){el('status').textContent=t;}
 el('photo').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){status('Selecciona un archivo de imagen.');return;}originalFile=f;var im=new Image();im.onload=function(){source=im;render();status('Fotografía cargada. Ya puedes generar tus diseños.');};im.onerror=function(){status('No se pudo abrir la fotografía.');};im.src=URL.createObjectURL(f);});
 document.querySelectorAll('.format').forEach(function(b){b.onclick=function(){format=b.dataset.format;document.querySelectorAll('.format').forEach(function(x){x.classList.toggle('active',x===b);});render();};});
