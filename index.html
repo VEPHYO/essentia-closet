@@ -461,6 +461,33 @@ nav .active {
   font-size: 22px;
 }
 
+
+/* FICHA DE PRENDA Y GALERÍA */
+.product-card{cursor:pointer}
+.product-image .photo-count{position:absolute;right:10px;bottom:10px;background:rgba(73,51,38,.82);color:#fffaf5;padding:6px 10px;border-radius:20px;font-size:11px;letter-spacing:.5px}
+.product-card:focus-visible{outline:2px solid var(--brown);outline-offset:4px}
+.product-detail{position:fixed;inset:0;z-index:200;background:rgba(35,25,19,.72);display:none;align-items:center;justify-content:center;padding:22px;overflow-y:auto}
+.product-detail.open{display:flex}
+.detail-panel{position:relative;width:min(980px,100%);max-height:min(92vh,900px);overflow-y:auto;background:var(--white);border-radius:10px;display:grid;grid-template-columns:1.05fr .95fr;box-shadow:0 20px 70px rgba(0,0,0,.25)}
+.detail-close{position:absolute;top:12px;right:12px;z-index:4;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,250,245,.94);color:var(--brown-dark);font-size:26px;cursor:pointer}
+.detail-gallery{padding:22px;background:#eee3d8;min-width:0}
+.detail-main-photo{height:min(62vh,620px);min-height:300px;position:relative;display:flex;align-items:center;justify-content:center;background:#e7d9cb;overflow:hidden}
+.detail-main-photo img{width:100%;height:100%;object-fit:contain}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,250,245,.92);color:var(--brown-dark);font-size:25px;cursor:pointer}
+.gallery-arrow.prev{left:12px}.gallery-arrow.next{right:12px}
+.detail-thumbs{display:flex;gap:9px;overflow-x:auto;padding-top:12px}
+.detail-thumb{flex:0 0 66px;height:78px;padding:0;border:2px solid transparent;background:#e6d8ca;cursor:pointer;overflow:hidden}
+.detail-thumb.active{border-color:var(--brown)}
+.detail-thumb img{width:100%;height:100%;object-fit:cover}
+.detail-copy{padding:55px 38px 35px;display:flex;flex-direction:column;justify-content:center}
+.detail-copy .product-category{margin-bottom:10px}
+.detail-copy h2{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4vw,43px);font-weight:500;color:var(--brown-dark);line-height:1.05;margin-bottom:16px}
+.detail-description{font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.5;color:var(--brown);white-space:pre-line;margin-bottom:22px}
+.detail-attributes{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:15px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;color:var(--muted)}
+.detail-attributes strong{display:block;color:var(--brown-dark);font-weight:600;margin-top:4px}
+.detail-price{font-size:24px;font-weight:600;color:var(--brown-dark);margin-top:22px}
+@media(max-width:700px){.product-detail{padding:10px;align-items:flex-start}.detail-panel{grid-template-columns:1fr;max-height:96vh}.detail-gallery{padding:12px}.detail-main-photo{height:48vh;min-height:260px}.detail-copy{padding:25px 22px 28px}.detail-copy h2{font-size:32px}.detail-description{font-size:18px}}
+
 /* ESENCIA */
 
 .essence {
@@ -831,6 +858,14 @@ footer {
   </div>
 
   <div class="products" id="products"></div>
+<div class="product-detail" id="productDetail" aria-hidden="true">
+  <section class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <button class="detail-close" id="detailClose" aria-label="Cerrar">×</button>
+    <div class="detail-gallery"><div class="detail-main-photo" id="detailMainPhoto"></div><div class="detail-thumbs" id="detailThumbs"></div></div>
+    <div class="detail-copy" id="detailCopy"></div>
+  </section>
+</div>
+
 
 </section>
 
@@ -924,16 +959,37 @@ function buildFilters(categories){
  document.getElementById('sizeFilter').innerHTML+='<option value="">—</option>'+sizes.map(x=>'<option value="'+safe(x)+'">'+safe(x)+'</option>').join('');
  document.getElementById('colorFilter').innerHTML+=colors.map(x=>'<option value="'+safe(x)+'">'+safe(x)+'</option>').join('');
 }
+let selectedProduct=null,selectedPhoto=0;
+function orderedImages(p){return [...(p.garment_images||[])].sort((a,b)=>(Number(b.is_cover)-Number(a.is_cover))||(Number(a.sort_order)||0)-(Number(b.sort_order)||0));}
 function renderProducts(){
  const q=(document.getElementById('catalogSearch')?.value||'').toLowerCase(),size=document.getElementById('sizeFilter')?.value||'',color=document.getElementById('colorFilter')?.value||'',max=document.getElementById('maxPrice')?.value;
  const shown=products.filter(p=>(activeCategory==='Todos'||p.categories?.name===activeCategory)&&(!q||(p.name+' '+p.description+' '+p.code).toLowerCase().includes(q))&&(!size||p.size===size)&&(!color||p.color===color)&&(!max||Number(p.listed_price)<=Number(max)));
  if(!shown.length){container.innerHTML='<p class="empty-message">No encontramos prendas con esos filtros. Prueba con otra búsqueda.</p>';return;}
  container.innerHTML=shown.map(p=>{
- const images=(p.garment_images||[]).sort((a,b)=>(Number(b.is_cover)-Number(a.is_cover))||a.sort_order-b.sort_order),photo=images[0];
- const desc=[p.size?'Talla '+p.size:'',p.condition||'',p.color||''].filter(Boolean).join(' · ');
- return '<article class="product-card"><div class="product-image">'+(photo?'<img src="'+photoUrl(photo.storage_path)+'" alt="'+safe(photo.alt_text||p.name)+'" loading="lazy">':'<div class="image-placeholder">Essentia</div>')+'</div><div class="product-info"><span class="product-category">'+safe(p.categories?.name||'')+'</span><h3>'+safe(p.name)+'</h3><p>'+safe(desc)+'</p><div class="product-price">S/ '+Number(p.listed_price).toFixed(2)+'</div></div></article>';
+  const images=orderedImages(p),photo=images[0],desc=[p.size?'Talla '+p.size:'',p.condition||'',p.color||''].filter(Boolean).join(' · ');
+  return '<article class="product-card" tabindex="0" role="button" data-product-id="'+safe(p.id)+'" aria-label="Ver detalles de '+safe(p.name)+'"><div class="product-image">'+(photo?'<img src="'+photoUrl(photo.storage_path)+'" alt="'+safe(photo.alt_text||p.name)+'" loading="lazy">':'<div class="image-placeholder">Essentia</div>')+(images.length>1?'<span class="photo-count">▧ '+images.length+' fotos</span>':'')+'</div><div class="product-info"><span class="product-category">'+safe(p.categories?.name||'')+'</span><h3>'+safe(p.name)+'</h3><p>'+safe(desc)+'</p><div class="product-price">S/ '+Number(p.listed_price).toFixed(2)+'</div></div></article>';
  }).join('');
 }
+function showPhoto(index){
+ if(!selectedProduct)return;const imgs=orderedImages(selectedProduct);if(!imgs.length)return;
+ selectedPhoto=(index+imgs.length)%imgs.length;const img=imgs[selectedPhoto];
+ document.getElementById('detailMainPhoto').innerHTML='<img src="'+photoUrl(img.storage_path)+'" alt="'+safe(img.alt_text||selectedProduct.name)+'">'+(imgs.length>1?'<button class="gallery-arrow prev" aria-label="Fotografía anterior" onclick="showPhoto('+(selectedPhoto-1)+')">‹</button><button class="gallery-arrow next" aria-label="Fotografía siguiente" onclick="showPhoto('+(selectedPhoto+1)+')">›</button>':'');
+ document.querySelectorAll('.detail-thumb').forEach((b,i)=>b.classList.toggle('active',i===selectedPhoto));
+}
+function openProduct(id){
+ selectedProduct=products.find(p=>String(p.id)===String(id));if(!selectedProduct)return;selectedPhoto=0;
+ const p=selectedProduct,imgs=orderedImages(p);
+ document.getElementById('detailCopy').innerHTML='<span class="product-category">'+safe(p.categories?.name||'')+'</span><h2 id="detailTitle">'+safe(p.name)+'</h2><p class="detail-description">'+safe(p.description||'Consulta por esta prenda para conocer más detalles.')+'</p><div class="detail-attributes">'+[['Código',p.code],['Talla',p.size],['Color',p.color],['Estado',p.condition]].filter(x=>x[1]).map(x=>'<div>'+safe(x[0])+'<strong>'+safe(x[1])+'</strong></div>').join('')+'</div><div class="detail-price">S/ '+Number(p.listed_price).toFixed(2)+'</div>';
+ document.getElementById('detailThumbs').innerHTML=imgs.map((im,i)=>'<button class="detail-thumb '+(i===0?'active':'')+'" aria-label="Ver fotografía '+(i+1)+'" onclick="showPhoto('+i+')"><img src="'+photoUrl(im.storage_path)+'" alt=""></button>').join('');
+ if(imgs.length)showPhoto(0);else document.getElementById('detailMainPhoto').innerHTML='<div class="image-placeholder">Essentia</div>';
+ const modal=document.getElementById('productDetail');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('detailClose').focus();
+}
+function closeProduct(){const modal=document.getElementById('productDetail');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';selectedProduct=null;}
+container.addEventListener('click',e=>{const card=e.target.closest('[data-product-id]');if(card)openProduct(card.dataset.productId);});
+container.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-product-id]')){e.preventDefault();openProduct(e.target.dataset.productId);}});
+document.getElementById('detailClose').addEventListener('click',closeProduct);
+document.getElementById('productDetail').addEventListener('click',e=>{if(e.target.id==='productDetail')closeProduct();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('productDetail').classList.contains('open'))closeProduct();});
 async function initCatalog(){
  container.innerHTML='<p class="empty-message">Estamos preparando nuestra selección…</p>';
  const [cats,items]=await Promise.all([db.from('categories').select('id,name').eq('is_active',true).order('name'),db.from('garments').select('id,code,name,description,size,color,condition,listed_price,categories(name),garment_images(storage_path,alt_text,sort_order,is_cover)').eq('is_published',true).eq('status','available').order('created_at',{ascending:false})]);
