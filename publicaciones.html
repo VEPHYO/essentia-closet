@@ -7,7 +7,7 @@
 <header class="top"><a class="brand" href="index.html">ESSENTIA<small>CLÓSET · ESTUDIO CREATIVO</small></a><a class="back" href="admin.html">← VOLVER AL PANEL</a></header>
 <main><p class="eyebrow">CONTENIDO PARA TUS REDES</p><h1>Tu próxima publicación, lista para compartir.</h1><p class="intro">Carga la foto de una prenda y prepara piezas visuales con la identidad de Essentia, textos para redes y un paquete descargable. Descarga aquí y sube manualmente a tus cuentas.</p>
 <div class="layout"><section class="panel"><h2>Detalles de la prenda</h2>
-<div class="field"><label>Fotografía de la prenda</label><div class="upload"><input id="photo" type="file" accept="image/*"><p class="hint">Usa una foto nítida y con buena luz. La imagen original también irá en el ZIP.</p></div></div>
+<div class="field"><label>Seleccionar una prenda ya registrada</label><select id="inventorySelect"><option value="">Elegir del inventario…</option></select><p class="hint">Al elegir una prenda disponible, se cargarán sus datos y su fotografía automáticamente.</p></div><div class="field"><label>Fotografía de la prenda</label><div class="upload"><input id="photo" type="file" accept="image/*"><p class="hint">Usa una foto nítida y con buena luz. La imagen original también irá en el ZIP.</p></div></div>
 <div class="row"><div class="field"><label>Código</label><input id="code" value="EC-001" maxlength="24"></div><div class="field"><label>Precio (S/)</label><input id="price" type="number" min="0" step=".50" value="35"></div></div>
 <div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Blusas</option><option>Pantalones</option><option>Vestidos</option><option>Otros</option></select></div><div class="field"><label>Talla</label><input id="size" value="M" maxlength="20"></div></div>
 <div class="field"><label for="accent">Acento de color para el diseño</label><select id="accent"><option value="neutral">Neutro Essentia</option><option value="fuchsia">Fucsia suave</option><option value="aqua">Verde agua</option><option value="sage">Verde salvia</option><option value="lilac">Lavanda</option><option value="terracotta">Terracota</option><option value="mustard">Mostaza suave</option><option value="blue">Azul cielo</option></select><p class="hint">El fondo crema se mantiene; el acento cambia pequeños detalles para armonizar con la prenda.</p></div>
@@ -16,7 +16,9 @@
 <section class="preview"><h2>Vista previa de diseño</h2><div class="formats"><button class="format active" data-format="square">Cuadrado · 1:1</button><button class="format" data-format="portrait">Vertical · 4:5</button><button class="format" data-format="story">Historia · 9:16</button></div><div class="canvas-wrap"><canvas id="art" width="1080" height="1080"></canvas></div>
 <div class="caption"><h3>Texto sugerido para publicar</h3><pre id="caption">Carga una foto y genera tus publicaciones.</pre><div class="actions"><button class="btn alt" id="copy">Copiar texto</button><button class="btn alt" id="downloadPng">Descargar imagen</button><button class="btn" id="downloadZip">Descargar paquete ZIP</button></div></div></section></div>
 <p class="footer">ESSENTIA CLÓSET · PRENDAS CON ESENCIA. HISTORIAS QUE CONTINÚAN.</p></main>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const sb=window.supabase.createClient("https://rmmblodhtageqyqdgjjd.supabase.co","sb_publishable_ej7zToZPhtf32VvsbhKiGA_iDbbYoeS");
+var inventoryItems=[];
 var el=function(id){return document.getElementById(id)},canvas=el('art'),ctx=canvas.getContext('2d'),source=null,originalFile=null,format='square',ready=false;
 var sizes={square:[1080,1080],portrait:[1080,1350],story:[1080,1920]};
 function data(){return{code:el('code').value.trim()||'ESSENTIA',price:Number(el('price').value||0),category:el('category').value,size:el('size').value.trim(),condition:el('condition').value.trim(),accent:el('accent').value,extra:el('extra').value.trim()};}
@@ -45,6 +47,22 @@ var priceX=logoX+logoBoxW+10,priceAvailable=pad+photoW-18-priceX,priceText='S/ '
 ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#684b39';ctx.font='500 '+fitFont(priceText,'"DM Sans"',story?49:42,25,priceAvailable)+'px "DM Sans"';ctx.fillText(priceText,priceCenterX,contentCenterY-24);
 ctx.fillStyle='#947b68';ctx.font=(story?17:14)+'px "DM Sans"';ctx.fillText('ESSENTIA',priceCenterX,contentCenterY+10);ctx.font=(story?14:11)+'px "DM Sans"';ctx.fillText('CLOSET',priceCenterX,contentCenterY+27);ctx.textBaseline='alphabetic';
 el('caption').textContent=caption();ready=true;}
+
+async function loadInventoryForMarketing(){
+ const {data,error}=await sb.from('garments').select('id,code,name,description,size,color,condition,listed_price,categories(name),garment_images(storage_path,sort_order,is_cover)').eq('status','available').eq('is_published',true).order('created_at',{ascending:false});
+ if(error){status('No se pudo cargar el inventario. Puedes subir una fotografía manualmente.');console.error(error);return;}
+ inventoryItems=data||[];
+ el('inventorySelect').innerHTML='<option value="">Elegir del inventario…</option>'+inventoryItems.map(g=>'<option value="'+g.id+'">'+g.code+' · '+g.name+'</option>').join('');
+}
+el('inventorySelect').addEventListener('change',function(){
+ const g=inventoryItems.find(x=>String(x.id)===this.value);if(!g)return;
+ el('code').value=g.code||'';el('price').value=g.listed_price||0;el('category').value=g.categories?.name||'Otros';el('size').value=g.size||'';el('condition').value=g.condition||'Consultar';el('extra').value=g.description||'';
+ const imgs=(g.garment_images||[]).sort((a,b)=>(Number(b.is_cover)-Number(a.is_cover))||a.sort_order-b.sort_order);
+ if(!imgs.length){status('Datos cargados. Esta prenda aún no tiene fotografía.');render();return;}
+ const url=sb.storage.from('garment-photos').getPublicUrl(imgs[0].storage_path).data.publicUrl;
+ const im=new Image();im.crossOrigin='anonymous';im.onload=()=>{source=im;originalFile=null;ready=true;render();status('Prenda '+g.code+' cargada desde tu inventario.');};im.onerror=()=>status('No se pudo cargar la foto del inventario; puedes subirla manualmente.');im.src=url;
+});
+
 function status(t){el('status').textContent=t;}
 el('photo').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){status('Selecciona un archivo de imagen.');return;}originalFile=f;var im=new Image();im.onload=function(){source=im;render();status('Fotografía cargada. Ya puedes generar tus diseños.');};im.onerror=function(){status('No se pudo abrir la fotografía.');};im.src=URL.createObjectURL(f);});
 document.querySelectorAll('.format').forEach(function(b){b.onclick=function(){format=b.dataset.format;document.querySelectorAll('.format').forEach(function(x){x.classList.toggle('active',x===b);});render();};});
@@ -57,4 +75,5 @@ el('downloadPng').onclick=async function(){if(!source){status('Carga una fotogra
 el('copy').onclick=async function(){try{await navigator.clipboard.writeText(caption());status('Texto copiado.');}catch(e){status('No se pudo copiar automáticamente; selecciona el texto para copiarlo.');}};
 el('downloadZip').onclick=async function(){if(!source){status('Carga una fotografía primero.');return;}if(typeof JSZip==='undefined'){status('No se pudo cargar el módulo ZIP. Revisa tu conexión.');return;}status('Preparando tus diseños y textos…');var zip=new JSZip(),d=data();for(var f of Object.keys(sizes)){format=f;render();zip.file('imagenes/essentia-'+f+'-'+d.code+'.png',await blob());}if(originalFile)zip.file('foto-original/'+originalFile.name,originalFile);zip.file('textos/caption-redes.txt',caption());zip.file('textos/marketplace.txt',d.category+'\nCódigo: '+d.code+'\nPrecio: S/ '+d.price.toFixed(2)+'\nTalla: '+(d.size||'Consultar')+'\nEstado: '+(d.condition||'Consultar')+'\n'+d.extra+'\n\nPrenda disponible. Escríbenos para coordinar tu compra.');zip.file('LEEME.txt','ESSENTIA CLÓSET\nIncluye imágenes cuadrada 1:1, vertical 4:5 e historia 9:16, fotografía original y textos sugeridos para redes y Marketplace.\nDescarga y revisa los archivos antes de subirlos manualmente a tus cuentas.');var out=await zip.generateAsync({type:'blob'});save(out,'essentia-publicaciones-'+d.code+'.zip');format='square';document.querySelectorAll('.format').forEach(function(x){x.classList.toggle('active',x.dataset.format==='square');});render();status('¡Paquete descargado! Incluye 3 formatos, foto original y textos.');};
 render();
+loadInventoryForMarketing();
 </script></body></html>
