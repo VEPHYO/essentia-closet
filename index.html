@@ -903,145 +903,44 @@ footer {
 
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-
-// PRODUCTOS DE DEMOSTRACIÓN
-// Después conectaremos estos datos con Supabase.
-
-const products = [
-  {
-    code: "EC001",
-    name: "Blusa delicada",
-    category: "Blusas",
-    description: "Talla M · Excelente estado",
-    price: 25,
-    image: ""
-  },
-  {
-    code: "EC002",
-    name: "Pantalón clásico",
-    category: "Pantalones",
-    description: "Talla 28 · Excelente estado",
-    price: 35,
-    image: ""
-  },
-  {
-    code: "EC003",
-    name: "Vestido especial",
-    category: "Vestidos",
-    description: "Talla S · Muy buen estado",
-    price: 40,
-    image: ""
-  },
-  {
-    code: "EC004",
-    name: "Suéter elegante",
-    category: "Otros",
-    description: "Talla M · Muy buen estado",
-    price: 32,
-    image: ""
-  },
-  {
-    code: "EC005",
-    name: "Blusa romántica",
-    category: "Blusas",
-    description: "Talla S · Excelente estado",
-    price: 28,
-    image: ""
-  },
-  {
-    code: "EC006",
-    name: "Pantalón moderno",
-    category: "Pantalones",
-    description: "Talla 30 · Buen estado",
-    price: 38,
-    image: ""
-  },
-  {
-    code: "EC007",
-    name: "Vestido floral",
-    category: "Vestidos",
-    description: "Talla M · Excelente estado",
-    price: 45,
-    image: ""
-  },
-  {
-    code: "EC008",
-    name: "Prenda especial",
-    category: "Otros",
-    description: "Talla única · Buen estado",
-    price: 20,
-    image: ""
-  }
-];
-
-const container = document.getElementById("products");
-const buttons = document.querySelectorAll(".filter");
-
-function renderProducts(category = "Todos") {
-
-  const visible = products.filter(product =>
-    category === "Todos" || product.category === category
-  );
-
-  if (!visible.length) {
-    container.innerHTML =
-      '<p class="empty-message">Pronto tendremos más prendas especiales para ti.</p>';
-    return;
-  }
-
-  container.innerHTML = visible.map(product => `
-
-    <article class="product-card">
-
-      <div class="product-image">
-
-        ${
-          product.image
-          ? `<img src="${product.image}" alt="${product.name}" loading="lazy">`
-          : `<div class="image-placeholder">Essentia</div>`
-        }
-
-      </div>
-
-      <div class="product-info">
-
-        <span class="product-category">
-          ${product.category}
-        </span>
-
-        <h3>${product.name}</h3>
-
-        <p>${product.description}</p>
-
-        <div class="product-price">
-          S/ ${product.price.toFixed(2)}
-        </div>
-
-      </div>
-
-    </article>
-
-  `).join("");
-
+const SUPABASE_URL='https://rmmblodhtageqyqdgjjd.supabase.co';
+const SUPABASE_KEY='sb_publishable_ej7zToZPhtf32VvsbhKiGA_iDbbYoeS';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const container=document.getElementById('products');
+let products=[],activeCategory='Todos';
+const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function photoUrl(path){return db.storage.from('garment-photos').getPublicUrl(path).data.publicUrl;}
+function buildFilters(categories){
+ const box=document.querySelector('.filters');
+ box.innerHTML='<button class="filter active" data-category="Todos">Todo</button>'+categories.map(c=>'<button class="filter" data-category="'+safe(c.name)+'">'+safe(c.name)+'</button>').join('');
+ const extras=document.createElement('div');extras.style.cssText='display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:15px auto 0';
+ extras.innerHTML='<input id="catalogSearch" placeholder="Buscar prenda…" aria-label="Buscar prenda" style="max-width:220px;padding:10px;border:1px solid #e9e1d7;background:#fffefa"><select id="sizeFilter" aria-label="Filtrar por talla" style="padding:10px;border:1px solid #e9e1d7;background:#fffefa"><option value="">Todas las tallas</option></select><select id="colorFilter" aria-label="Filtrar por color" style="padding:10px;border:1px solid #e9e1d7;background:#fffefa"><option value="">Todos los colores</option></select><input id="maxPrice" type="number" min="0" placeholder="Precio máximo S/" aria-label="Precio máximo" style="max-width:160px;padding:10px;border:1px solid #e9e1d7;background:#fffefa">';
+ box.after(extras);
+ box.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{activeCategory=b.dataset.category;box.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderProducts();}));
+ ['catalogSearch','sizeFilter','colorFilter','maxPrice'].forEach(id=>document.getElementById(id).addEventListener('input',renderProducts));
+ const sizes=[...new Set(products.map(p=>p.size).filter(Boolean))].sort(),colors=[...new Set(products.map(p=>p.color).filter(Boolean))].sort();
+ document.getElementById('sizeFilter').innerHTML+='<option value="">—</option>'+sizes.map(x=>'<option value="'+safe(x)+'">'+safe(x)+'</option>').join('');
+ document.getElementById('colorFilter').innerHTML+=colors.map(x=>'<option value="'+safe(x)+'">'+safe(x)+'</option>').join('');
 }
-
-buttons.forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    buttons.forEach(item => item.classList.remove("active"));
-
-    button.classList.add("active");
-
-    renderProducts(button.dataset.category);
-
-  });
-
-});
-
-renderProducts();
-
+function renderProducts(){
+ const q=(document.getElementById('catalogSearch')?.value||'').toLowerCase(),size=document.getElementById('sizeFilter')?.value||'',color=document.getElementById('colorFilter')?.value||'',max=document.getElementById('maxPrice')?.value;
+ const shown=products.filter(p=>(activeCategory==='Todos'||p.categories?.name===activeCategory)&&(!q||(p.name+' '+p.description+' '+p.code).toLowerCase().includes(q))&&(!size||p.size===size)&&(!color||p.color===color)&&(!max||Number(p.listed_price)<=Number(max)));
+ if(!shown.length){container.innerHTML='<p class="empty-message">No encontramos prendas con esos filtros. Prueba con otra búsqueda.</p>';return;}
+ container.innerHTML=shown.map(p=>{
+ const images=(p.garment_images||[]).sort((a,b)=>(Number(b.is_cover)-Number(a.is_cover))||a.sort_order-b.sort_order),photo=images[0];
+ const desc=[p.size?'Talla '+p.size:'',p.condition||'',p.color||''].filter(Boolean).join(' · ');
+ return '<article class="product-card"><div class="product-image">'+(photo?'<img src="'+photoUrl(photo.storage_path)+'" alt="'+safe(photo.alt_text||p.name)+'" loading="lazy">':'<div class="image-placeholder">Essentia</div>')+'</div><div class="product-info"><span class="product-category">'+safe(p.categories?.name||'')+'</span><h3>'+safe(p.name)+'</h3><p>'+safe(desc)+'</p><div class="product-price">S/ '+Number(p.listed_price).toFixed(2)+'</div></div></article>';
+ }).join('');
+}
+async function initCatalog(){
+ container.innerHTML='<p class="empty-message">Estamos preparando nuestra selección…</p>';
+ const [cats,items]=await Promise.all([db.from('categories').select('id,name').eq('is_active',true).order('name'),db.from('garments').select('id,code,name,description,size,color,condition,listed_price,categories(name),garment_images(storage_path,alt_text,sort_order,is_cover)').eq('is_published',true).eq('status','available').order('created_at',{ascending:false})]);
+ if(cats.error||items.error){console.error(cats.error||items.error);container.innerHTML='<p class="empty-message">En este momento no podemos cargar el catálogo. Inténtalo nuevamente más tarde.</p>';return;}
+ products=items.data||[];buildFilters(cats.data||[]);renderProducts();
+}
+initCatalog();
 </script>
 
 </body>
