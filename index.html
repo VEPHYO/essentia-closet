@@ -765,6 +765,27 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* PROMOCIONES ESPECIALES */
+.promotions-section{display:none;padding:62px 5%;background:linear-gradient(120deg,#efe1d3,#faf4ed);text-align:center}
+.promotions-section.has-promos{display:block}
+.promotion-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:32px;text-align:left}
+.promotion-card{background:#fffaf5;border:1px solid #dfcdbb;border-radius:8px;overflow:hidden;box-shadow:0 8px 22px rgba(82,55,37,.06)}
+.promotion-head{padding:22px 22px 14px;background:#684b39;color:#fffaf5}
+.promotion-head .promo-kicker{font-size:9px;letter-spacing:3px;color:#e6cdb5}
+.promotion-head h3{font:500 29px 'Cormorant Garamond',serif;margin:7px 0}
+.promotion-head p{font:15px 'Cormorant Garamond',serif;line-height:1.4;color:#f2e5d8}
+.promotion-items{padding:15px;display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px}
+.promo-item{border:1px solid #eee1d5;border-radius:6px;overflow:hidden;background:#fff}
+.promo-item img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.promo-item-copy{padding:9px}
+.promo-item-copy strong{display:block;font:500 16px 'Cormorant Garamond',serif}
+.promo-old-price{font-size:11px;color:#947b68;text-decoration:line-through}
+.promo-new-price{font-weight:700;color:#493326;font-size:15px;margin:3px 0 8px}
+.promo-item-copy button{width:100%;border:1px solid #684b39;border-radius:20px;background:transparent;color:#684b39;padding:7px 8px;font-size:10px;letter-spacing:1px;cursor:pointer}
+.promo-item-copy button:hover{background:#684b39;color:#fff}
+@media(max-width:650px){.promotions-section{padding:45px 4%}.promotion-list{grid-template-columns:1fr}.promotion-items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 
@@ -837,6 +858,13 @@ footer {
 
 <section class="quote">
   <p>«La elegancia está en aquello que nos hace únicas»</p>
+</section>
+
+<section class="promotions-section" id="promociones">
+  <p class="section-label">OPORTUNIDADES ESPECIALES</p>
+  <h2 class="section-title">Promociones únicas</h2>
+  <p class="section-description">Piezas seleccionadas con precios especiales por tiempo limitado.</p>
+  <div class="promotion-list" id="promotionList"></div>
 </section>
 
 <section class="catalog" id="catalogo">
@@ -990,11 +1018,30 @@ container.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.ta
 document.getElementById('detailClose').addEventListener('click',closeProduct);
 document.getElementById('productDetail').addEventListener('click',e=>{if(e.target.id==='productDetail')closeProduct();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('productDetail').classList.contains('open'))closeProduct();});
+async function loadPromotions(){
+ const box=document.getElementById('promotionList'),section=document.getElementById('promociones');
+ const {data,error}=await db.from('promotions').select('id,name,description,discount_type,discount_value,starts_at,ends_at,promotion_garments(garments(id,code,name,listed_price,garment_images(storage_path,alt_text,sort_order,is_cover)))').eq('status','active').order('created_at',{ascending:false});
+ if(error){console.error('No se pudieron cargar las promociones:',error);return;}
+ const now=Date.now(),promos=(data||[]).filter(p=>(!p.starts_at||new Date(p.starts_at).getTime()<=now)&&(!p.ends_at||new Date(p.ends_at).getTime()>=now)).map(p=>({...p,items:(p.promotion_garments||[]).map(x=>x.garments).filter(g=>g&&Number(g.listed_price)>0)})).filter(p=>p.items.length);
+ if(!promos.length){section.classList.remove('has-promos');return;}
+ section.classList.add('has-promos');
+ box.innerHTML=promos.map(p=>{
+  const discount=p.discount_type==='percentage'?Number(p.discount_value)+'% de descuento':'S/ '+Number(p.discount_value).toFixed(2)+' menos';
+  const items=p.items.map(g=>{
+   const price=Number(g.listed_price),final=Math.max(0,p.discount_type==='percentage'?price*(1-Number(p.discount_value)/100):price-Number(p.discount_value));
+   const imgs=[...(g.garment_images||[])].sort((x,y)=>(Number(y.is_cover)-Number(x.is_cover))||(Number(x.sort_order)||0)-(Number(y.sort_order)||0)),photo=imgs[0];
+   return '<article class="promo-item">'+(photo?'<img src="'+photoUrl(photo.storage_path)+'" alt="'+safe(photo.alt_text||g.name)+'" loading="lazy">':'<div class="image-placeholder">Essentia</div>')+'<div class="promo-item-copy"><strong>'+safe(g.name)+'</strong><div class="promo-old-price">S/ '+price.toFixed(2)+'</div><div class="promo-new-price">S/ '+final.toFixed(2)+'</div><button type="button" data-promo-product="'+safe(g.id)+'">VER PRENDA</button></div></article>';
+  }).join('');
+  return '<article class="promotion-card"><div class="promotion-head"><span class="promo-kicker">PROMOCIÓN ESPECIAL</span><h3>'+safe(p.name)+'</h3><p>'+safe(p.description||discount)+'</p><p style="font-size:12px;margin-top:8px;letter-spacing:1px">'+discount+'</p></div><div class="promotion-items">'+items+'</div></article>';
+ }).join('');
+ box.querySelectorAll('[data-promo-product]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('catalogo').scrollIntoView({behavior:'smooth'});openProduct(b.dataset.promoProduct);}));
+}
+
 async function initCatalog(){
  container.innerHTML='<p class="empty-message">Estamos preparando nuestra selección…</p>';
  const [cats,items]=await Promise.all([db.from('categories').select('id,name').eq('is_active',true).order('name'),db.from('garments').select('id,code,name,description,size,color,condition,listed_price,categories(name),garment_images(storage_path,alt_text,sort_order,is_cover)').eq('is_published',true).eq('status','available').order('created_at',{ascending:false})]);
  if(cats.error||items.error){console.error(cats.error||items.error);container.innerHTML='<p class="empty-message">En este momento no podemos cargar el catálogo. Inténtalo nuevamente más tarde.</p>';return;}
- products=items.data||[];buildFilters(cats.data||[]);renderProducts();
+ products=items.data||[];buildFilters(cats.data||[]);renderProducts();await loadPromotions();
 }
 initCatalog();
 </script>
